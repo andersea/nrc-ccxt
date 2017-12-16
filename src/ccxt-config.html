@@ -1,0 +1,87 @@
+<script type="text/x-red" data-template-name="ccxt-config">
+    <div class="form-row">
+        <label for="node-config-input-exchange"><i class="fa fa-university"></i> Exchange</label>
+        <select id="node-config-input-exchange">
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-uid"><i class="fa fa-tag"></i> UID</label>
+        <input type="text" id="node-config-input-uid" placeholder="UID">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-login"><i class="fa fa-tag"></i> Login</label>
+        <input type="text" id="node-config-input-login" placeholder="Login">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-apiKey"><i class="fa fa-id-card"></i> Key ID</label>
+        <input type="text" id="node-config-input-apiKey" placeholder="api key">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-secret"><i class="fa fa-user-secret"></i> Secret</label>
+        <input type="text" id="node-config-input-secret" placeholder="secret key">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-key"></i> Password</label>
+        <input type="text" id="node-config-input-password" placeholder="password/passphrase">
+    </div>
+    <div class='form-row'>
+        <label>&nbsp;</label>
+        <input type='checkbox' id='node-config-input-test' style='display: inline-block; width: auto; vertical-align: top;'>
+        <label for='node-config-input-test' style='width: 70%;'><span>Test/Sandbox</span></label>
+    </div>
+</script>
+<script type="text/javascript" src="https://unpkg.com/ccxt"></script>
+<script type="text/javascript">
+    let exchangeRealNames;
+
+    RED.nodes.registerType('ccxt-config', {
+        category: 'config',
+        defaults: {
+            exchange: { value: "", required: true },
+            uid: { value: "", required: false },
+            login: { value: "", required: false },
+            apiKey: { value: "", required: true },
+            secret: { value: "", required: true },
+            password: { value: "", required: false },
+            test: { value: false },
+            name: { value: "", required: false },
+        },
+        label: function () {
+            return this.name ? this.name : this.exchange.toUpperCase() + (this.test ? ' Test' : '');
+        },
+        oneditprepare: function () {
+            const exchangeSelect = $("#node-config-input-exchange");
+
+            if (!exchangeSelect.children().length) {
+                exchangeSelect.append($("<option/>"));
+                ccxt.exchanges.map(name => {
+                    exchangeSelect.append($("<option/>").val(name).text((new ccxt[name]).name));
+                });
+
+                exchangeSelect.val(this.exchange);
+
+                $("#node-config-input-uid").parent().hide();
+                $("#node-config-input-login").parent().hide();
+                $("#node-config-input-apikey").parent().hide();
+                $("#node-config-input-secret").parent().hide();
+                $("#node-config-input-password").parent().hide();
+
+                exchangeSelect.change(event => {
+                    console.log('Selected ' + exchangeSelect.val());
+                    if (exchangeSelect.val()) {
+                        const requiredCredentials = (new ccxt[exchangeSelect.val()]).requiredCredentials;
+                        Object.keys(requiredCredentials).forEach(key => {
+                            const div = $("#node-config-input-" + key).parent();
+                            requiredCredentials[key] ? div.show() : div.hide();
+                        })
+                    }
+                })
+                .change();
+            }
+        }
+    });
+</script>

@@ -1,0 +1,7 @@
+coverage/
+node_modules/
+.node-red/
+npm-debug.log
+.nyc_output
+lib
+lib_test
