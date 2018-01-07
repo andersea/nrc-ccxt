@@ -9,6 +9,12 @@ export = (RED: Red) => {
         props: IccxtConfigNodeProperties
     ) {
         RED.nodes.createNode(this, props);
+
+        let nonceCounter = -1515351273241;
+        function nonce() {
+            return Date.now() + nonceCounter++;
+        }
+
         this.exchange = new (ccxt as any)[props.exchange]({
             apiKey: props.apiKey,
             login: props.login,
@@ -16,6 +22,7 @@ export = (RED: Red) => {
             secret: props.secret,
             uid: props.uid,
         });
+        this.exchange.nonce = nonce;
         if (props.test && this.exchange.urls.test) {
             this.exchange.urls.api = this.exchange.urls.test;
         }
