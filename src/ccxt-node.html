@@ -1,7 +1,12 @@
 <script type="text/x-red" data-template-name="ccxt">
-    <div class='form-row'>
+    <div class='form-row' id='exchange-config-row'>
         <label for='node-input-config'><i class='fa fa-university'></i> Exchange</label>
         <input type='text' id='node-input-config'>
+    </div>
+    <div class='form-row'>
+        <label>&nbsp;</label>
+        <input type='checkbox' id='node-input-dynamic' style='display: inline-block; width: auto; vertical-align: top;'>
+        <label for='node-input-dynamic' style='width: 70%;'> <span>select config using msg.exchange</span></label>
     </div>
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
@@ -19,7 +24,8 @@
         category: 'private',
         color: "#705090",
         defaults: {
-            config: { type: 'ccxt-config', required: true },
+            config: { type: 'ccxt-config', required: false },
+            dynamic: { value: false },
             name: { value: "" }
         },
         inputs: 1,
@@ -27,11 +33,16 @@
         icon: "serial.png",
         label: function () {
             const configNode = RED.nodes.node(this.config);
-            return this.name || (configNode ? configNode.label() : "ccxt");
+            return this.name || (this.dynamic ? 'msg.exchange' : (configNode ? configNode.label() : "ccxt"));
         },
         labelStyle: function () {
             return this.name ? "node_label_italic" : "";
         },
+        oneditprepare: function() {
+            $('#node-input-dynamic').change(e => {
+                $('#node-input-dynamic').is(':checked') ? $('#exchange-config-row').hide() : $('#exchange-config-row').show();
+            }).change();
+        }
     });
 
 </script>
