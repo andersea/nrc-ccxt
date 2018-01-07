@@ -44,8 +44,8 @@
             exchange: { value: "", required: true },
             uid: { value: "", required: false },
             login: { value: "", required: false },
-            apiKey: { value: "", required: true },
-            secret: { value: "", required: true },
+            apiKey: { value: "", required: false },
+            secret: { value: "", required: false },
             password: { value: "", required: false },
             test: { value: false },
             name: { value: "", required: false },
@@ -71,12 +71,12 @@
                 $("#node-config-input-password").parent().hide();
 
                 exchangeSelect.change(event => {
-                    console.log('Selected ' + exchangeSelect.val());
                     if (exchangeSelect.val()) {
                         const requiredCredentials = (new ccxt[exchangeSelect.val()]).requiredCredentials;
                         Object.keys(requiredCredentials).forEach(key => {
-                            const div = $("#node-config-input-" + key).parent();
-                            requiredCredentials[key] ? div.show() : div.hide();
+                            const input = $("#node-config-input-" + key);
+                            input.attr("required", requiredCredentials[key]);
+                            requiredCredentials[key] ? input.parent().show() : input.parent().hide();
                         })
                     }
                 })
