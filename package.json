@@ -32,7 +32,7 @@
     "watch:test": "jest --watch"
   },
   "dependencies": {
-    "ccxt": "^1.10.391"
+    "ccxt": "^1.10.579"
   },
   "devDependencies": {
     "@types/jest": "^20.0.5",
