@@ -23,6 +23,8 @@ export = (RED: Red) => {
             uid: props.uid,
         });
         this.exchange.nonce = nonce;
+        this.exchange.enableRateLimit = true;
+        this.exchange.rateLimit = 500;
         if (props.test && this.exchange.urls.test) {
             this.exchange.urls.api = this.exchange.urls.test;
         }
