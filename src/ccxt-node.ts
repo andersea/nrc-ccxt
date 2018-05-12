@@ -62,7 +62,8 @@ export = (RED: NodeRED.Red) => {
 function dispatch(exchange: any, msg: any): Promise<any> {
     if (!(typeof exchange[msg.topic] === 'function')) {
         return Promise.reject(
-            `msg.topic '${msg.topic}' is not a supported function on the ${exchange.name} exchange.`
+            `msg.topic '${msg.topic}' is not a supported function ` +
+                `on the ${exchange.name} exchange.`
         );
     }
     switch (msg.topic) {
