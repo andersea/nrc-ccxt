@@ -62,16 +62,31 @@ export = (RED: NodeRED.Red) => {
 function dispatch(exchange: any, msg: any): Promise<any> {
     try {
         switch (msg.topic) {
+            case 'market':
             case 'markets':
-                if (msg.payload === "all") {
-                    return Promise.resolve(exchange.markets);
-                } else {
-                    return Promise.resolve(exchange.markets[msg.payload]);
-                }
+                return exchange.loadMarkets().then(() => {
+                    if (msg.payload === 'all') {
+                        return exchange.markets;
+                    } else {
+                        return exchange.markets[msg.payload];
+                    }
+                });
+            case 'markets_by_id':
+                return exchange.loadMarkets().then(() => {
+                    if (msg.payload === 'all') {
+                        return exchange.markets_by_id;
+                    } else {
+                        return exchange.markets_by_id[msg.payload];
+                    }
+                });
             case 'marketId':
-                return Promise.resolve(exchange.marketId(msg.payload));
+                return exchange
+                    .loadMarkets()
+                    .then(() => exchange.marketId(msg.payload));
             case 'marketIds':
-                return Promise.resolve(exchange.marketIds(msg.payload));
+                return exchange
+                    .loadMarkets()
+                    .then(() => exchange.marketIds(msg.payload));
             case 'createOrder':
                 return exchange.createOrder(
                     msg.payload.symbol,
@@ -91,7 +106,7 @@ function dispatch(exchange: any, msg: any): Promise<any> {
             default:
                 return exchange[msg.topic](msg.payload, msg.params);
         }
-    } catch(error) {
+    } catch (error) {
         return Promise.reject(error);
     }
 }
