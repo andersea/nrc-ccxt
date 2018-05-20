@@ -60,30 +60,38 @@ export = (RED: NodeRED.Red) => {
 };
 
 function dispatch(exchange: any, msg: any): Promise<any> {
-    if (!(typeof exchange[msg.topic] === 'function')) {
-        return Promise.reject(
-            `msg.topic '${msg.topic}' is not a supported function ` +
-                `on the ${exchange.name} exchange.`
-        );
-    }
-    switch (msg.topic) {
-        case 'createOrder':
-            return exchange.createOrder(
-                msg.payload.symbol,
-                msg.payload.type,
-                msg.payload.side,
-                msg.payload.amount,
-                msg.payload.price,
-                msg.params
-            );
-        case 'withdraw':
-            return exchange.withdraw(
-                msg.payload.currency,
-                msg.payload.amount,
-                msg.payload.address,
-                msg.params
-            );
-        default:
-            return exchange[msg.topic](msg.payload, msg.params);
+    try {
+        switch (msg.topic) {
+            case 'markets':
+                if (msg.payload === "all") {
+                    return Promise.resolve(exchange.markets);
+                } else {
+                    return Promise.resolve(exchange.markets[msg.payload]);
+                }
+            case 'marketId':
+                return Promise.resolve(exchange.marketId(msg.payload));
+            case 'marketIds':
+                return Promise.resolve(exchange.marketIds(msg.payload));
+            case 'createOrder':
+                return exchange.createOrder(
+                    msg.payload.symbol,
+                    msg.payload.type,
+                    msg.payload.side,
+                    msg.payload.amount,
+                    msg.payload.price,
+                    msg.params
+                );
+            case 'withdraw':
+                return exchange.withdraw(
+                    msg.payload.currency,
+                    msg.payload.amount,
+                    msg.payload.address,
+                    msg.params
+                );
+            default:
+                return exchange[msg.topic](msg.payload, msg.params);
+        }
+    } catch(error) {
+        return Promise.reject(error);
     }
 }
