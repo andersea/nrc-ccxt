@@ -28,5 +28,8 @@ export = (RED: Red) => {
         if (props.test && this.exchange.urls.test) {
             this.exchange.urls.api = this.exchange.urls.test;
         }
+        const ccxtGlobal = this.context().global.get('ccxt') || {};
+        ccxtGlobal[this.exchange.id] = this.exchange;
+        this.context().global.set('ccxt', ccxtGlobal);
     });
 };
