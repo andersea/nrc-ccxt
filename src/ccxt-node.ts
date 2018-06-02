@@ -92,8 +92,8 @@ function dispatch(exchange: any, msg: any): Promise<any> {
                 return exchange[msg.topic](
                     msg.payload.symbol,
                     msg.payload.amount,
-                    msg.params                    
-                )
+                    msg.params
+                );
             case 'createOrder':
                 return exchange.createOrder(
                     msg.payload.symbol,
