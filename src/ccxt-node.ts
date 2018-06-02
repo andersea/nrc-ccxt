@@ -87,6 +87,13 @@ function dispatch(exchange: any, msg: any): Promise<any> {
                 return exchange
                     .loadMarkets()
                     .then(() => exchange.marketIds(msg.payload));
+            case 'createMarketBuyOrder':
+            case 'createMarketSellOrder':
+                return exchange[msg.topic](
+                    msg.payload.symbol,
+                    msg.payload.amount,
+                    msg.params                    
+                )
             case 'createOrder':
                 return exchange.createOrder(
                     msg.payload.symbol,
