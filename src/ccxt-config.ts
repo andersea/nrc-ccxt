@@ -15,23 +15,14 @@ export = (RED: Red) => {
             return Date.now() + nonceCounter++;
         }
 
-        if(props.exchange === "binance") {
-            this.exchange = new (ccxt as any)[props.exchange]({
-                apiKey: props.apiKey,
-                secret: props.secret,
-                options: {
-                    adjustForTimeDifference: true
-                }
-            });
-        } else {
-            this.exchange = new (ccxt as any)[props.exchange]({
-                apiKey: props.apiKey,
-                login: props.login,
-                password: props.password,
-                secret: props.secret,
-                uid: props.uid,
-            });
-        }
+        this.exchange = new (ccxt as any)[props.exchange]({
+            apiKey: props.apiKey,
+            login: props.login,
+            password: props.password,
+            secret: props.secret,
+            uid: props.uid,
+        });
+
         this.exchange.nonce = nonce;
         this.exchange.enableRateLimit = true;
         this.exchange.rateLimit = 500;
