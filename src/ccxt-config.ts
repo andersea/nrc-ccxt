@@ -4,7 +4,7 @@ import { Red } from 'node-red';
 import { IccxtConfigNode, IccxtConfigNodeProperties } from './ccxt-common';
 
 export = (RED: Red) => {
-    RED.nodes.registerType('ccxt-config', function(
+    RED.nodes.registerType('ccxt-config', function (
         this: IccxtConfigNode,
         props: IccxtConfigNodeProperties
     ) {

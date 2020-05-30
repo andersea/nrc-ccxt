@@ -6,7 +6,7 @@ import { IccxtConfigNode, IccxtNodeProperties } from './ccxt-common';
 export = (RED: NodeRED.Red) => {
     function findDynamicExchange(exchangeId: string) {
         let exchange: any;
-        RED.nodes.eachNode(node => {
+        RED.nodes.eachNode((node) => {
             if (!exchange && node.type === 'ccxt-config') {
                 const configNode = RED.nodes.getNode(
                     node.id
@@ -35,12 +35,12 @@ export = (RED: NodeRED.Red) => {
     function CCXTNode(this: NodeRED.Node, props: IccxtNodeProperties) {
         RED.nodes.createNode(this, props);
 
-        this.on('input', msg => {
+        this.on('input', (msg) => {
             const exchange = getExchange(props, msg.exchange);
 
             if (exchange) {
                 dispatch(exchange, msg)
-                    .then(res => {
+                    .then((res) => {
                         msg.payload = res;
                         if (!msg.exchange) {
                             msg.exchange = exchange.id;
